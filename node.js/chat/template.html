@@ -7,16 +7,31 @@
 		<script>
 				var socket = io.connect();
 
+				socket.on('connect client', function(data) {
+					$('#log ul').append('<li style="text-align:center;">[notice] Connet <span style="font-weight:bold;">' + data.username + '</span></li>');
+				});
+
 				socket.on('welcome', function(data) {
 					$('#log ul').append('<li>' + data.salutation + '</li>');
+					$('#log ul').append('<li>Your assigned name is <span style="font-weight:bold;">' + data.username + '</span></li>');
+					$("#console").attr("socket_id", data.id);
 				});
 
 				socket.on('data from server', function(data) {
-					$('#log ul').append('<li>' + data.message + '</li>');
+					if(data.isMyData) {
+						var text = '<span style="font-weight:bold;">' + data.username + '</span>: ' + data.text;
+						$('#log ul').append('<li style="text-align:right;">' + text + '</li>');
+					} else {
+						var text = data.username + ': ' + data.text;
+						$('#log ul').append('<li>' + text + '</li>');
+					}
+
+					//var text = (data.isMyData ? '<span style="font-weight:bold;">' + data.username + '</span>' : data.username) + ': ' + data.text;
+					//$('#log ul').append('<li>' + text + '</li>');
 				});
 
 				socket.on('disconnect client', function(data) {
-					$('#log ul').append('<li>' + data.username + ' is gone.</li>');
+					$('#log ul').append('<li style="text-align:center;">[notice] Disconnet <span style="font-weight:bold;">' + data.username + '</span></li>');
 				});
 
 				$(function() {
@@ -25,7 +40,7 @@
 						if(event.keyCode == 13) {
 							var msg = entry_el.attr('value');
 							if(msg) {
-								socket.emit('data from client', {'text': msg});
+								socket.emit('data from client', {'text': msg, 'id': $("#console").attr("socket_id")});
 								entry_el.attr('value', '');
 								window.scrollBy(0, 1000000000000);
 								entry_el.focus();
@@ -51,7 +66,7 @@
 				width: 100%;
 			}
 			#log ul {
-				padding: 0;
+				padding: 0 20px;
 				margin: 0;
 			}
 			#log ul li {
