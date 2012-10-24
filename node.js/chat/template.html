@@ -8,7 +8,7 @@
 				var socket = io.connect();
 
 				socket.on('connect client', function(data) {
-					$('#log ul').append('<li style="text-align:center;">[notice] Connet <span style="font-weight:bold;">' + data.username + '</span></li>');
+					$('#log ul').append('<li style="text-align:center;">[!!] Connect <span style="font-weight:bold;">' + data.username + '</span></li>');
 				});
 
 				socket.on('welcome', function(data) {
@@ -25,9 +25,6 @@
 						var text = data.username + ': ' + data.text;
 						$('#log ul').append('<li>' + text + '</li>');
 					}
-
-					//var text = (data.isMyData ? '<span style="font-weight:bold;">' + data.username + '</span>' : data.username) + ': ' + data.text;
-					//$('#log ul').append('<li>' + text + '</li>');
 				});
 
 				socket.on('disconnect client', function(data) {
@@ -54,7 +51,7 @@
 
 		<style type='text/css'>
 			body {
-				background-color: #666;
+				background-color: #999;
 				color: fff;
 				font-size: 14px;
 				margin: 0;

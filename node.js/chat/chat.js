@@ -20,8 +20,6 @@ function handler(request, response) {
 
 var idx = 1;
 io.sockets.on('connection', function(socket) {
-	clients.push(socket);
-
 	var username = "test" + idx++;
 	var welcome = {
 			salutation: 'Welcome to this chat server!',
@@ -29,17 +27,19 @@ io.sockets.on('connection', function(socket) {
 			id: socket.id
 	};
 
+	// welcome message to connect user
 	socket.emit('welcome', welcome);
 
-	/*
-	 * notice other connected user
-	 * */
+	// notice other connected user
 	clients.forEach(function(_socket) {
 		_socket.emit('connect client', {'username': username});
 	});
 
+	// push send message clients array.
+	clients.push(socket);
+
 	/*
-	 * chat data
+	 * send chatting message
 	 * */
 	socket.on('data from client', function(data) {
 		clog.log('message ' + data.text);
